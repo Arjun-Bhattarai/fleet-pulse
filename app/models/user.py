@@ -15,4 +15,4 @@ class User(SQLModel, table=True):
     hashed_password: str
     role: UserRole = Field(default=UserRole.driver)
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
