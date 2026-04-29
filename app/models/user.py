@@ -7,6 +7,7 @@ from datetime import datetime
 class UserRole(str, Enum):
     admin = "admin"
     driver = "driver"
+    user = "user"
 
 class User(SQLModel, table=True):
     __tablename__ = "users"  

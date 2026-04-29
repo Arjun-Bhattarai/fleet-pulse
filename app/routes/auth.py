@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from ..core.db import get_session
-from ..models.user import User
+from ..models.user import User, UserRole
 from ..schemas.user import UserLogin, UserRegister, UserResponse
 from ..core.security import (
     create_access_token,
@@ -36,6 +36,7 @@ async def register(
         username=info.username,
         email=info.email,
         hashed_password=hash_password(info.password),
+        role=UserRole.user,
     )
 
     db.add(user)
