@@ -4,13 +4,15 @@ from enum import Enum
 from typing import Optional
 from datetime import datetime
 
+
 class UserRole(str, Enum):
     admin = "admin"
     driver = "driver"
     user = "user"
 
+
 class User(SQLModel, table=True):
-    __tablename__ = "users"  
+    __tablename__ = "users"
 
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(unique=True)
@@ -19,3 +21,6 @@ class User(SQLModel, table=True):
     role: UserRole = Field(default=UserRole.driver)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    def __repr__(self) -> str:
+        return f"User(username={self.username}, email={self.email}, role={self.role})"

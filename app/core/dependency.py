@@ -1,12 +1,23 @@
-from fastapi import Request,HTTPException, status
+from fastapi import Request, HTTPException, status, Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from app.core.security import decode_access_token, get_current_user
+from typing import List
+
+from app.core.security import decode_token, get_current_user
 from app.core.redis import token_in_blocklist
+from ..models.user import User
+
+
 class AccessToken(HTTPBearer):
     async def __call__(self, request: Request) -> dict:
-        credentials: HTTPAuthorizationCredentials = await super().__call__(request)
+        credentials = await super().__call__(request)
 
-        token_data = decode_access_token(credentials.credentials)
+        token_data = decode_token(credentials.credentials)
+
+        if not token_data:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token",
+            )
 
         if await token_in_blocklist(token_data.get("jti")):
             raise HTTPException(
@@ -14,19 +25,21 @@ class AccessToken(HTTPBearer):
                 detail="Token is blacklisted",
             )
 
-        self.verify_token_data(token_data)
         return token_data
 
-    def verify_token_data(self, token_data: dict) -> None:
-        raise NotImplementedError
+
 class RoleChecker:
     def __init__(self, allowed_roles: List[str]) -> None:
         self.allowed_roles = allowed_roles
 
-    def __call__(self, current_user: User = Depends(get_current_user)) -> bool:
-        if current_user.role not in self.allowed_roles:
+    def __call__(self, current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role.value == "admin":
+            return current_user
+        
+        if current_user.role.value not in self.allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You do not have permission",
             )
-        return True
+
+        return current_user

@@ -12,38 +12,28 @@ from ..core.security import (
     verify_password,
     get_current_user,
 )
+from ..core.dependency import AccessToken, RoleChecker  
+from app.services.service import AuthService
 
 router = APIRouter()
+user_service = AuthService()
 
 
 
-@router.post("/register")
-async def register(
-    info: UserRegister,
-    db: AsyncSession = Depends(get_session),
+
+@router.post("/register", response_model=UserResponse)
+async def signup(
+    user: UserRegister,
+    session: AsyncSession = Depends(get_session)
 ):
-    result = await db.execute(
-        select(User).where(User.email == info.email)
-    )
 
-    if result.scalar_one_or_none():
+    if await user_service.user_exists(user.email, user.username, session):
         raise HTTPException(
             status_code=400,
-            detail="Email already registered"
+            detail="User already exists"
         )
 
-    user = User(
-        username=info.username,
-        email=info.email,
-        hashed_password=hash_password(info.password),
-        role=UserRole.user,
-    )
-
-    db.add(user)
-    await db.commit()
-    await db.refresh(user)
-
-    return {"message": f"Registration Success for: {user.username}"}
+    return await user_service.create_user(user, session)
 
 
 
@@ -52,11 +42,7 @@ async def login(
     info: UserLogin,
     db: AsyncSession = Depends(get_session),
 ):
-    result = await db.execute(
-        select(User).where(User.email == info.email)
-    )
-
-    user = result.scalar_one_or_none()
+    user = await user_service.get_user_by_email(info.email, db)
 
     if not user:
         raise HTTPException(
@@ -71,7 +57,11 @@ async def login(
         )
 
     access_token = create_access_token(
-        data={"uid": str(user.id), "role": user.role.value}
+        data={
+            "uid": str(user.id),
+            "email": user.email,
+            "role": user.role.value,
+        }
     )
 
     refresh_token = create_refresh_token(
@@ -84,9 +74,25 @@ async def login(
     }
 
 
-
 @router.get("/profile", response_model=UserResponse)
-async def get_profile(
-    current_user: User = Depends(get_current_user),
-):
+async def get_profile(current_user: User = Depends(get_current_user)):
     return current_user
+
+#last ma modify garxu !!!!
+
+@router.get("/admin-dashboard")
+async def admin_dashboard(
+    user: User = Depends(RoleChecker(["admin"]))
+):
+    return {"message": "This is the admin dashboard", "user": user.username}
+@router.get("/driver-dashboard")
+async def driver_dashboard(
+    user: User = Depends(RoleChecker(["driver"]))
+):
+    return {"message": "This is the driver dashboard", "user": user.username}
+
+@router.get("/user-dashboard")
+async def user_dashboard(
+    user: User = Depends(RoleChecker(["user"]))
+):
+    return {"message": "This is the user dashboard", "user": user.username}
