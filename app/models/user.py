@@ -18,7 +18,7 @@ class User(SQLModel, table=True):
     username: str = Field(unique=True)
     email: str = Field(unique=True)
     hashed_password: str = Field(..., min_length=6, max_length=72)
-    role: UserRole = Field(default=UserRole.driver)
+    role: UserRole = Field(default=UserRole.user)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 

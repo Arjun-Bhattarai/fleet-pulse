@@ -1,5 +1,5 @@
 from passlib.context import CryptContext
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 from datetime import datetime, timedelta, timezone
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
@@ -77,12 +77,14 @@ def decode_token(token: str) -> dict:
 
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = HTTPBearer()
+    credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
-    token = credentials.credentials
-    payload = decode_token(token)
+    try:
+        payload = decode_token(credentials.credentials)
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     if payload.get("type") != "access":
-        raise HTTPException(401, "Invalid token type")
+        raise HTTPException(status_code=401, detail="Invalid token type")
 
     return payload
