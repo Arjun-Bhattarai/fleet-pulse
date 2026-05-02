@@ -45,17 +45,6 @@ A backend system built with **FastAPI** that allows users to send real-time dema
 
 ---
 
-### 🧱 Architecture
-
-* Clean separation of concerns:
-
-  * **Routes (API layer)**
-  * **Services (business logic)**
-  * **Schemas (validation)**
-  * **Models (database)**
-  * **Core (auth, dependencies, config)**
-
----
 
 ## 🛠️ Tech Stack
 
@@ -70,36 +59,6 @@ A backend system built with **FastAPI** that allows users to send real-time dema
 
 ## 📁 Project Structure
 
-```
-app/
-│
-├── core/
-│   ├── config.py
-│   ├── db.py
-│   ├── security.py
-│   ├── dependency.py
-│   └── redis.py
-│
-├── models/
-│   ├── user.py
-│   └── signal.py
-│
-├── schemas/
-│   ├── user.py
-│   └── signal.py
-│
-├── services/
-│   ├── service.py
-│   └── signal.py
-│
-├── routes/
-│   ├── auth.py
-│   └── signal.py
-│
-└── main.py
-```
-
----
 
 ## ⚙️ Environment Variables
 
