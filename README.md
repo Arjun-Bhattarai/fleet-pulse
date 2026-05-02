@@ -57,26 +57,8 @@ A backend system built with **FastAPI** that allows users to send real-time dema
 
 ---
 
-## 📁 Project Structure
 
 
-## ⚙️ Environment Variables
-
-Create a `.env` file:
-
-```
-DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/db_name
-
-JWT_SECRET=your_super_secret_key
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE=1800
-REFRESH_TOKEN_EXPIRE=86400
-
-REDIS_HOST=localhost
-REDIS_PORT=6379
-```
-
----
 
 ## ▶️ Running the Project
 
