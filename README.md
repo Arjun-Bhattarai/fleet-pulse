@@ -73,37 +73,6 @@ pip install -r requirements.txt
 ```
 uvicorn app.main:app --reload
 ```
-
----
-
-## 📡 API Endpoints
-
-### 🔐 Auth
-
-* `POST /register`
-* `POST /login`
-
----
-
-### 📍 Signals
-
-#### User
-
-* `POST /signals` → Create signal
-* `GET /signals/my` → Get own signals
-* `PUT /signals/{id}` → Update own signal
-* `DELETE /signals/{id}` → Delete own signal
-
-#### Driver/Admin
-
-* `GET /signals` → Get all signals
-
-#### Shared
-
-* `GET /signals/{id}` → Get signal details
-
----
-
 ## 🔒 Security Design
 
 * JWT token required for protected routes
