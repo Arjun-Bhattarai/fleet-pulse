@@ -79,3 +79,15 @@ class SignalService:
         await self.db_session.commit()
         await self.db_session.refresh(signal_to_update)
         return signal_to_update
+    
+    async def get_signal_by_id(self, signal_id: int):
+        result = await self.db_session.exec(
+            select(Signal).where(Signal.id == signal_id)
+        )
+        signal = result.first()
+        if not signal:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Signal {signal_id} not found"
+            )
+        return signal
