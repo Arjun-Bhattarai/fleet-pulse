@@ -22,3 +22,7 @@ class SignalResponse(SQLModel):
     user_id: int
     created_at: datetime.datetime
 
+class SignalNearbyResponse(SQLModel):
+    model_config = ConfigDict(from_attributes=True)
+    signals: SignalResponse
+    distance_km: float

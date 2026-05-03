@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..core.db import get_session
-from ..schemas.signal import SignalCreate, SignalResponse, SignalUpdate
+from ..schemas.signal import SignalCreate, SignalResponse, SignalUpdate, SignalNearbyResponse
 from ..services.signal import SignalService
 from ..models.user import User
 from ..core.dependency import RoleChecker
 from ..core.security import get_current_user
+from ..utility.location import LocationUtility
 
 router = APIRouter()
 
@@ -49,3 +50,11 @@ async def delete_signal_by_id(signal_id: int, session: AsyncSession = Depends(ge
     signal_service = SignalService(session)
     deleted_signal = await signal_service.delete_signal(signal_id, current_user.id)
     return deleted_signal
+
+# Nearby signals ko lagi endpoint, jasma user le latitude, longitude, ra radius_km pathaunecha, ani tyo radius bhitra parne signal haru ko list aauxa
+@router.get("/signals/nearby", response_model=list[SignalNearbyResponse])  # nearby signal haru ko list
+async def get_nearby_signals(latitude: float, longitude: float, radius_km: float=5.0, session: AsyncSession = Depends(get_session), current_user: User = Depends(get_current_user)):
+    signal_service = SignalService(session)
+    nearby_signals = await signal_service.get_prioritized_signals(latitude, longitude, radius_km)
+    return nearby_signals
+    

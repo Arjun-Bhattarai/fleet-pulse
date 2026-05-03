@@ -108,4 +108,9 @@ class SignalService:
             if distance <= radius_km:
                 prioritized_signals.append((signal, distance))
         prioritized_signals.sort(key=lambda x: x[1])
-        return [signal for signal, _ in prioritized_signals]
+        return [
+  {
+    "signal": signal,
+    "distance": distance
+  }
+]
