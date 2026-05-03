@@ -3,6 +3,7 @@ from app.schemas.signal import SignalCreate, SignalUpdate
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import HTTPException, status
+from ..utility.location import LocationUtility
 
 
 class SignalService:
@@ -91,3 +92,20 @@ class SignalService:
                 detail=f"Signal {signal_id} not found"
             )
         return signal
+    
+# user la driver ko location anusar signal haru prioritize garna ko lagi using sorting and distance calculation
+    async def get_prioritized_signals(self, driver_lat: float, driver_long: float, radius_km: float = 5.0):
+        result = await self.db_session.exec(select(Signal))
+        signals = result.all()
+        if not signals:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No signals found"
+            )
+        prioritized_signals = []
+        for signal in signals:
+            distance = LocationUtility.calculate_distance(driver_lat, driver_long, signal.latitude, signal.longitude)
+            if distance <= radius_km:
+                prioritized_signals.append((signal, distance))
+        prioritized_signals.sort(key=lambda x: x[1])
+        return [signal for signal, _ in prioritized_signals]
