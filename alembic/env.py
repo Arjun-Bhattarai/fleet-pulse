@@ -1,29 +1,15 @@
-from logging.config import fileConfig
-
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 from sqlmodel import SQLModel
 
-from app.config import config as app_config
-
 config = context.config
 
-# 🔥 Set sync DB URL for Alembic
-config.set_main_option(
-    "sqlalchemy.url",
-    app_config.SYNC_DATABASE_URL
-)
-
-# import all models so Alembic detects them
-from app.models import *
-
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+from app.models.user import User, DriverLocation
 
 target_metadata = SQLModel.metadata
 
 
-def run_migrations_offline() -> None:
+def run_migrations_offline():
     url = config.get_main_option("sqlalchemy.url")
 
     context.configure(
@@ -38,7 +24,7 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-def run_migrations_online() -> None:
+def run_migrations_online():
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
