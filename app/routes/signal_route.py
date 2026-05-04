@@ -3,10 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..core.db import get_session
 from ..schemas.signal import SignalCreate, SignalResponse, SignalUpdate, SignalNearbyResponse
 from ..services.signal import SignalService
-from ..models.user import User
+from ..models.user import DriverLocation, User
 from ..core.dependency import RoleChecker
 from ..core.security import get_current_user
 from ..utility.location import LocationUtility
+
 
 router = APIRouter()
 
@@ -58,3 +59,4 @@ async def get_nearby_signals(latitude: float, longitude: float, radius_km: float
     nearby_signals = await signal_service.get_prioritized_signals(latitude, longitude, radius_km)
     return nearby_signals
     
+

@@ -1,4 +1,3 @@
-# models/user.py
 from sqlmodel import SQLModel, Field
 from enum import Enum
 from typing import Optional
@@ -19,8 +18,8 @@ class User(SQLModel, table=True):
     email: str = Field(unique=True)
     hashed_password: str = Field(..., min_length=6, max_length=72)
     role: UserRole = Field(default=UserRole.user)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     def __repr__(self) -> str:
         return f"User(username={self.username}, email={self.email}, role={self.role})"
