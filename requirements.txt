@@ -3,7 +3,12 @@ uvicorn
 sqlalchemy
 alembic
 asyncpg
-pydantic
+pydantic[email]
+email-validator  
 python-dotenv
 passlib
-python-jose 
+python-jose
+sqlmodel
+pydantic_settings
+jwt
+redis
