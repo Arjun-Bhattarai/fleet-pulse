@@ -95,22 +95,27 @@ class SignalService:
     
 # user la driver ko location anusar signal haru prioritize garna ko lagi using sorting and distance calculation
     async def get_prioritized_signals(self, driver_lat: float, driver_long: float, radius_km: float = 5.0):
+      
         result = await self.db_session.exec(select(Signal))
         signals = result.all()
+        
         if not signals:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="No signals found"
-            )
+            return []
+
         prioritized_signals = []
         for signal in signals:
-            distance = LocationUtility.calculate_distance(driver_lat, driver_long, signal.latitude, signal.longitude)
+            distance = LocationUtility.calculate_distance(
+                driver_lat, driver_long, signal.latitude, signal.longitude
+            )
+            
             if distance <= radius_km:
-                prioritized_signals.append((signal, distance))
-        prioritized_signals.sort(key=lambda x: x[1])
-        return [
-  {
-    "signal": signal,
-    "distance": distance
-  }
-]
+                prioritized_signals.append({
+                    "signal": signal,
+                    "distance": round(distance, 2)
+                })
+        
+        # Distance anusar signal haru sort garne, najik ko signal haru pahila aune garne
+        prioritized_signals.sort(key=lambda x: x["distance"])
+        
+        return prioritized_signals
+        
