@@ -25,3 +25,4 @@ class Settings(BaseSettings):
 
 
 config = Settings()
+print("DATABASE URL:", config.DATABASE_URL)
