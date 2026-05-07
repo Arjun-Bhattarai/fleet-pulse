@@ -105,12 +105,6 @@ To build a **smart transport demand system** that helps:
 ## 👨‍💻 Author
 
 Built as a backend system learning project using FastAPI and modern backend architecture.
-
-
-
-#HELP NEEDED
-Need someone to do Frontend!!!!!
-
 ---
 
 ## ⭐ Status
