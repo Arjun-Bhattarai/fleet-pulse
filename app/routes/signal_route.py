@@ -9,7 +9,7 @@ from ..core.security import get_current_user
 from ..utility.location import LocationUtility
 
 
-router = APIRouter()
+router = APIRouter(tags=["signals"])
 
 
 @router.post("/signals",response_model=SignalResponse)  # user la send garako signal haru ko list

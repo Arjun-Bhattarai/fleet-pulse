@@ -5,7 +5,7 @@ from ..core.db import get_session
 from ..core.security import get_current_user
 from ..services.driver_location_service import DriverLocationService
 
-router = APIRouter()
+router = APIRouter(tags=["driver-location"])
 
 # Driver ko location update garna ko lagi service method
 

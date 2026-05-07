@@ -15,7 +15,7 @@ from ..core.security import (
 from ..core.dependency import AccessToken, RoleChecker  
 from app.services.service import AuthService
 
-router = APIRouter()
+router = APIRouter(tags=["auth"])
 user_service = AuthService()
 
 

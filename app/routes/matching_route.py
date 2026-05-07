@@ -10,7 +10,7 @@ from sqlalchemy import select
 from ..models.user import DriverLocation
 
 
-route = APIRouter()
+route = APIRouter(tags=["matching"])
 
 
 @route.get("/matching/drivers-signals", response_model=list[DriverMatchResponse])
