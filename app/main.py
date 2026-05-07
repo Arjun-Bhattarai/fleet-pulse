@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from sqlmodel import SQLModel
 from app.core.db import engine
-from app.routes import auth
+from app.routes import auth, driver_location_route, signal_route, matching_route
 import asyncio
 from sqlalchemy.exc import OperationalError
+
 
 
 @asynccontextmanager
@@ -24,4 +25,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(auth.router)
+app.include_router(auth.router, prefix="/auth")
+app.include_router(driver_location_route.router, prefix="/driver-locations")
+app.include_router(signal_route.router, prefix="/signals")
+app.include_router(matching_route.route, prefix="/matching")
