@@ -1,4 +1,5 @@
 from sqlmodel import SQLModel, Field
+from sqlalchemy import Column, DateTime, func
 from enum import Enum
 from typing import Optional
 from datetime import datetime, timezone
@@ -16,23 +17,28 @@ class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(unique=True)
     email: str = Field(unique=True)
-    hashed_password: str = Field(..., min_length=6, max_length=72)
+    hashed_password: str
+
     role: UserRole = Field(default=UserRole.user)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-    def __repr__(self) -> str:
-        return f"User(username={self.username}, email={self.email}, role={self.role})"
+    created_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
 
-class DriverLocation(SQLModel, table=True):# driver ko xa taha pauna! driver le location update garna
+    updated_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    )
+
+
+class DriverLocation(SQLModel, table=True):
     __tablename__ = "driver_locations"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(unique=True, foreign_key="users.id")
-    longitude: float = Field(...)
-    latitude: float = Field(...)
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    user_id: int = Field(foreign_key="users.id", unique=True)
 
+    longitude: float
+    latitude: float
 
-    def __repr__(self) -> str:
-        return f"DriverLocation(user_id={self.user_id}, longitude={self.longitude}, latitude={self.latitude}, updated_at={self.updated_at})"
+    updated_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    )

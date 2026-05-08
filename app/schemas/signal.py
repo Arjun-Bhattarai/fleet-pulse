@@ -1,7 +1,7 @@
 from pydantic import  Field,ConfigDict
 from sqlmodel import SQLModel
 from typing import Optional
-import datetime
+from datetime import datetime, timezone
 
 class SignalCreate(SQLModel):
     longitude: float
@@ -20,7 +20,8 @@ class SignalResponse(SQLModel):
     latitude: float
     count: int
     user_id: int
-    created_at: datetime.datetime
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class SignalNearbyResponse(SQLModel):
     model_config = ConfigDict(from_attributes=True)
