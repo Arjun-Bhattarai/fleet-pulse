@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE: int
     REFRESH_TOKEN_EXPIRE: int
 
-    # async (FastAPI)
+    
     DATABASE_URL: str # yo chai async (FastAPI) ko lagi ho, FastAPI le async URL support gardaicha
 
     SYNC_DATABASE_URL: str # yo chai sync (Alembic) ko lagi ho, Alembic le async URL support gardaina
