@@ -31,7 +31,6 @@ class AuthService:
 
         data["hashed_password"] = hash_password(data.pop("password"))
 
-        # create user
         new_user = User(**data)
         new_user.role = UserRole.user
 

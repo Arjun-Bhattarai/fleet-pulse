@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from sqlmodel import SQLModel
 from app.core.db import engine
-from app.routes import auth, driver_location_route, signal_route, matching_route
+from app.routes import auth, driver_location_route, signal_route, matching_route, role_change
 import asyncio
 from sqlalchemy.exc import OperationalError
 
@@ -29,3 +29,4 @@ app.include_router(auth.router, prefix="/auth")
 app.include_router(driver_location_route.router, prefix="/driver-locations")
 app.include_router(signal_route.router, prefix="/signals")
 app.include_router(matching_route.route, prefix="/matching")
+app.include_router(role_change.router, prefix="/role-change")

@@ -1,3 +1,4 @@
+from sqlmodel import select
 from passlib.context import CryptContext
 from fastapi import HTTPException, Depends
 from datetime import datetime, timedelta, timezone
@@ -5,6 +6,9 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
 import uuid
 from app.config import config
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.models.user import User
+from app.core.db import get_session
 
 password_context = CryptContext(
     schemes=["bcrypt"],
@@ -76,8 +80,9 @@ def decode_token(token: str) -> dict:
 
 
 
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: AsyncSession = Depends(get_session)
 ):
     try:
         payload = decode_token(credentials.credentials)
@@ -87,4 +92,13 @@ def get_current_user(
     if payload.get("type") != "access":
         raise HTTPException(status_code=401, detail="Invalid token type")
 
-    return payload
+    user_id = int(payload.get("uid"))
+
+
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return user

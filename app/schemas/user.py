@@ -11,6 +11,7 @@ class UserRegister(BaseModel): #yesma role halnu hudina, default role user nai h
     username: str
     email: EmailStr
     password: str = Field(..., min_length=6, max_length=72)
+    role: Optional[str] = "user"
 
 
 class UserLogin(BaseModel):
