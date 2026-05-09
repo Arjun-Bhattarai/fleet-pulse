@@ -29,7 +29,6 @@ async def setup_admin(
             detail="Admin already exists"
         )
 
-    # check duplicate email
     existing_email = await db.execute(
         select(User).where(User.email == data.email)
     )
@@ -64,7 +63,6 @@ async def create_driver(
     current_user: User = Depends(RoleChecker(["admin"]))
 ):
 
-    # check existing email
     existing_email = await db.execute(
         select(User).where(User.email == data.email)
     )
@@ -99,7 +97,6 @@ async def create_admin(
     current_user: User = Depends(RoleChecker(["admin"]))
 ):
 
-    # check existing email
     existing_email = await db.execute(
        select(User).where(User.email == data.email)
     )
