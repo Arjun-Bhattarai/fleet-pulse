@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class NearbySignalResponse(BaseModel):
-    signal_id: str
+    signal_id: int
     latitude: float
     longitude: float
     count: int

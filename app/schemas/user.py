@@ -24,3 +24,8 @@ class UserResponse(BaseModel):
     username: str
     email: str
     role: UserRole
+
+
+class DriverLocationCreate(BaseModel):
+    longitude: float
+    latitude: float

@@ -9,8 +9,20 @@ router = APIRouter(tags=["driver-location"])
 
 # Driver ko location update garna ko lagi service method
 
-@router.put("/driver/location", response_model=DriverLocation)  # driver le aafno location update garna ko lagi
-async def update_driver_location(longitude: float, latitude: float, session: AsyncSession = Depends(get_session), current_user: User = Depends(get_current_user)):
+from ..schemas.user import DriverLocationCreate
+
+@router.put("/driver/location", response_model=DriverLocation)
+async def update_driver_location(
+    data: DriverLocationCreate,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
     driver_location_service = DriverLocationService(session)
-    updated_location = await driver_location_service.update_driver_location(current_user.id, longitude, latitude)
+
+    updated_location = await driver_location_service.update_driver_location(
+        current_user.id,
+        data.longitude,
+        data.latitude
+    )
+
     return updated_location

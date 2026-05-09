@@ -1,4 +1,4 @@
-from pydantic import  Field,ConfigDict
+from pydantic import  BaseModel, Field,ConfigDict
 from sqlmodel import SQLModel
 from typing import Optional
 from datetime import datetime, timezone
@@ -27,3 +27,5 @@ class SignalNearbyResponse(SQLModel):
     model_config = ConfigDict(from_attributes=True)
     signals: SignalResponse
     distance_km: float
+
+
